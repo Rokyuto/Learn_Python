@@ -1,5 +1,4 @@
 from tkinter import *  # Import tkinter gui library
-from PIL import ImageTk,Image
 
 program = Tk()  # Create Program
 program.title("Calculator")
