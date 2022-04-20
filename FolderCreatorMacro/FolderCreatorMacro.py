@@ -11,7 +11,7 @@ current = set()
 # On Correct Hotkey Combination (Shift + f / Shift + F)
 def macro():
     #print("Detected hotkey")
-    GUI_CreateFolder = 'python FolderCreatorMacro\\FFFfGUI_CreateFolder.py'
+    GUI_CreateFolder = 'python FolderCreatorMacro\\GUI_CreateFolder.py'
     openGUI_CreateFolder = subprocess.Popen(GUI_CreateFolder, shell=True)
     out, err = openGUI_CreateFolder.communicate()
 
