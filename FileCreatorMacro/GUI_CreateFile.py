@@ -1,11 +1,11 @@
 from tkinter import *  # Import tkinter gui library
 from tkinter import filedialog
-import os , sys
 
 # Create File Function
 def createFile():
     # Set Default Path / Directory to create File
     filepath = filedialog.asksaveasfilename(initialdir="C:\\Users\\pc\\Desktop") 
+    file = open(filepath, 'w')
    
 #GUI 
 window = Tk() # Window
