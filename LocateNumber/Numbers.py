@@ -1,1 +1,3 @@
-myNumber = "+359893223020"
+number = input("Please enter phone number: ")
+
+myNumber = number
