@@ -4,7 +4,7 @@ import time
 keyboard = Controller()
 
 time.sleep(2)
-for char in "Simulate Key Presses in Python":
+for char in "=test":
     keyboard.press(char)
     keyboard.release(char)
     time.sleep(0.12)

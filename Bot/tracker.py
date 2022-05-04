@@ -40,6 +40,7 @@ if editNewestImage != SavedImage: # If the founded newest Image in the Website d
         img = requests.get("https://kpopping.com% s" % newestImageLink) # Get Full Image Source and Download it
         f.write(img.content) # Create File (Image) in the Current Directory (Saving Directory)
         print("Writing: " , newestImageName) # Debug print
+           
 else: # If the founded newest Image in the Website already exists in the Saving Directory
     print("The Image Already Exists")
  
