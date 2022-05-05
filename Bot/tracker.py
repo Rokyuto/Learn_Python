@@ -37,11 +37,11 @@ editNewestImage = newestImageName.replace(' ', '-').replace('/','') + '.jpg' # C
 if editNewestImage != SavedImage: # If the founded newest Image in the Website doesn't exists in the Saving Directory
     # Open the Last Image' Name
     with open (editNewestImage , 'wb') as f:
-        img = requests.get("https://kpopping.com% s" % newestImageLink) # Get Full Image Source and Download it
+        img = requests.get("https://kpopping.com% s" % newestImageLink) # Get Full Image Source and Download it 
         
         # Delete the old Saved Image
-        deleteOldImage = os.path.join(folderPath, SavedImage) 
-        
+        os.remove(SavedImage)
+           
         f.write(img.content) # Create File (Image) in the Current Directory (Saving Directory)
         print("Writing: " , newestImageName) # Debug print
         SavedImage = editNewestImage # Update the Saved Image to the Newest Image in the Website
