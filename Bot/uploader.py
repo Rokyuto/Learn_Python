@@ -18,14 +18,13 @@ async def on_ready():
 """
 # Call Tracker 
 def call_tracker():
-    # Change the Current Directory to the file (tracker.py) Directory
-    trackerDir = os.chdir(tracker)
-    print(trackerDir)
+    print(os.getcwd())
+
     file = 'python Bot\\tracker.py' # Initilialize tracker.py to track for new Image and Download it
     # Run tracker.py
     trackImage = subprocess.Popen(file)
-    out, err = trackImage.communicate()"""
-    
+    out, err = trackImage.communicate()
+""" 
    
 
 # Bot Command Text = image

@@ -47,11 +47,9 @@ if editNewestImage != SavedImage: # If the founded newest Image in the Website d
         SavedImage = editNewestImage # Update the Saved Image to the Newest Image in the Website
         
         # Change the Current Directory to the file (tracker.py) Directory
-        trackerDir = os.chdir(os.path.dirname(__file__))
-        print(os.getcwd()) # Debug print
+        #trackerDir = os.chdir(os.path.dirname(__file__))
           
 else: # If the founded newest Image in the Website already exists in the Saving Directory
     print("The Image Already Exists")
     # Change the Current Directory to the file (tracker.py) Directory
-    trackerDir = os.chdir(os.path.dirname(__file__))
-    print(os.getcwd()) # Debug print
+    #trackerDir = os.chdir(os.path.dirname(__file__))
