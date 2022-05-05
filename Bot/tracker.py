@@ -14,7 +14,7 @@ with os.scandir(os.getcwd()) as dirs: # Scan the current working directory (Savi
     for entry in dirs: # for each finded object
         SavedImage = entry.name # Update Saved Image
 
-URL = 'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-any/order-top' # Website URL
+URL = 'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-any/order' # Website URL
 
 page = requests.get(URL) # Call the Website
 
