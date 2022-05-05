@@ -15,25 +15,31 @@ bot = commands.Bot(command_prefix='!')
 async def on_ready():
     print("Connected!...")
 
-
+"""
 # Call Tracker 
 def call_tracker():
+    # Change the Current Directory to the file (tracker.py) Directory
+    trackerDir = os.chdir(tracker)
+    print(trackerDir)
     file = 'python Bot\\tracker.py' # Initilialize tracker.py to track for new Image and Download it
     # Run tracker.py
     trackImage = subprocess.Popen(file)
-    out, err = trackImage.communicate()
-   
+    out, err = trackImage.communicate()"""
+    
    
 
 # Bot Command Text = image
 # Send Image in Discord function
 @bot.command(pass_context=True)
 async def image(ctx):
-    call_tracker() # Call Tracker function
+    #call_tracker() # Call Tracker function
 
-    # Send Image in Discord
-    await ctx.send(file=discord.File(tracker.SavedImage))
+    # Get the Newest Image, saved in 'Bot\Images', from tracker.py file by the variable 'newestImage'
+    with os.scandir(os.getcwd()) as dirs: # Scan the current working directory (Saving Directory)
+        for entry in dirs: # for each finded object
+            #Image = entry.name # Update Saved Image
+            await ctx.send(file=discord.File(entry)) # Send Image in Discord
 
 
 # Bot Token (Initialize the Bot)
-bot.run('Nzk4NjExMTIxNTI3MzI0Njky.X_3ikA.0PbLyw5QOcDpxuF9Fb3CgVGRYrc')
+bot.run('token')

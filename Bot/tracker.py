@@ -38,9 +38,20 @@ if editNewestImage != SavedImage: # If the founded newest Image in the Website d
     # Open the Last Image' Name
     with open (editNewestImage , 'wb') as f:
         img = requests.get("https://kpopping.com% s" % newestImageLink) # Get Full Image Source and Download it
+        
+        # Delete the old Saved Image
+        deleteOldImage = os.path.join(folderPath, SavedImage) 
+        
         f.write(img.content) # Create File (Image) in the Current Directory (Saving Directory)
         print("Writing: " , newestImageName) # Debug print
-           
+        SavedImage = editNewestImage # Update the Saved Image to the Newest Image in the Website
+        
+        # Change the Current Directory to the file (tracker.py) Directory
+        trackerDir = os.chdir(os.path.dirname(__file__))
+        print(os.getcwd()) # Debug print
+          
 else: # If the founded newest Image in the Website already exists in the Saving Directory
     print("The Image Already Exists")
- 
+    # Change the Current Directory to the file (tracker.py) Directory
+    trackerDir = os.chdir(os.path.dirname(__file__))
+    print(os.getcwd()) # Debug print
