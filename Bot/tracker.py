@@ -9,9 +9,11 @@ folderPath = os.path.dirname('Bot/Images/')
 os.chdir(os.path.join(os.getcwd(), folderPath)) # Now all work with files will be done in this directory
 
 SavedImage = "" # Variable for the stored image in the Saving Directory
+isEmpty = True # Variable to check if the Saveing Image Directory is empty
 
 with os.scandir(os.getcwd()) as dirs: # Scan the current working directory (Saving Directory)
     for entry in dirs: # for each finded object
+        isEmpty = False # Directory is not empty
         SavedImage = entry.name # Update Saved Image
 
 URL = 'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-any/order' # Website URL
@@ -39,9 +41,10 @@ if editNewestImage != SavedImage: # If the founded newest Image in the Website d
     with open (editNewestImage , 'wb') as f:
         img = requests.get("https://kpopping.com% s" % newestImageLink) # Get Full Image Source and Download it 
         
-        # Delete the old Saved Image
-        os.remove(SavedImage)
-           
+        if isEmpty == False:
+            # Delete the old Saved Image
+            os.remove(SavedImage)
+        
         f.write(img.content) # Create File (Image) in the Current Directory (Saving Directory)
         print("Writing: " , newestImageName) # Debug print
         SavedImage = editNewestImage # Update the Saved Image to the Newest Image in the Website
