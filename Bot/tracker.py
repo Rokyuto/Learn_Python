@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 def TrackImage():
     # Find Images Saving Directory (Folder)
-    folderPath = os.path.dirname('Bot/Images/')
+    folderPath = os.path.dirname('Images/') # If running the code from VS Code dirname must be 'Bot/Images/'
 
     # Change the Current Working Directory to the Given Directory (Images Saving Directory)
     os.chdir(os.path.join(os.getcwd(), folderPath)) # Now all work with files will be done in this directory
