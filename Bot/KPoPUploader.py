@@ -9,7 +9,7 @@ import KPoPTracker
 import os
 
 # Bot Token
-token = 'Nzk4NjExMTIxNTI3MzI0Njky.X_3ikA.emiYpNmmH30YptpF4BhT2QHizqc'
+token = 'token'
 
 # Bot Command Prefix
 bot = commands.Bot(command_prefix='!')
