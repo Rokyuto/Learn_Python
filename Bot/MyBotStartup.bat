@@ -1,4 +1,4 @@
 @echo
-cd E:\Work\#Code Projects\Python\Bot
+cd W:\#Code_Projects\Python\Bot
 python uploader.py
 pause

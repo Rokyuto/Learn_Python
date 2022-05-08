@@ -2,6 +2,8 @@ import os
 import requests
 from bs4 import BeautifulSoup
 
+editNewestImage = ""
+
 def TrackImage():
     # Find Images Saving Directory (Folder)
     folderPath = os.path.dirname('Images/') # If running the code from VS Code dirname must be 'Bot/Images/'
@@ -29,7 +31,7 @@ def TrackImage():
 
     newestElement  = newestCategory.find(class_='cell') # Get the Newest Element in the Category
 
-    newestImage = newestCategory.find('img') # Get the Image in the Newest Element
+    newestImage = newestElement.find('img') # Get the Image in the Newest Element
 
     newestImageName = newestImage['alt'] # Newest Image Name
 
@@ -59,5 +61,3 @@ def TrackImage():
     # Change the Current Directory to the Project (Bot) Directory
     os.chdir(os.path.dirname(__file__))
     #print("Current Directory: " , os.getcwd())
-
-    
