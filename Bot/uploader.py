@@ -41,8 +41,8 @@ async def image(ctx):
     # Get the Newest Image, saved in 'Bot\Images', from tracker.py file by the variable 'newestImage'
     with os.scandir(os.getcwd()) as dirs: # Scan the current working directory (Saving Directory)
         for entry in dirs: # for each finded object
-            #Image = entry.name # Update Saved Image
-            await ctx.send(file=discord.File(entry)) # Send Image in Discord
+            imageName = entry.name.replace('-', ' ') # Get Saved Image Name
+            await ctx.send(imageName, file=discord.File(entry)) # Send the Image his Name in Discord
             
     # Return to the Initial Project (Bot) Directory
     os.chdir(initialDir)
