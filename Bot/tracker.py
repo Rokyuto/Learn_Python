@@ -29,7 +29,7 @@ def TrackImage():
 
     newestElement  = newestCategory.find(class_='cell') # Get the Newest Element in the Category
 
-    newestImage = newestCategory.find('img') # Get the Image in the Newest Element
+    newestImage = newestElement.find('img') # Get the Image in the Newest Element
 
     newestImageName = newestImage['alt'] # Newest Image Name
 
