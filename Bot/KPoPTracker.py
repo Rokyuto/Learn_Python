@@ -19,7 +19,7 @@ async def CheckImage(bot):
     
     newestCategory = images.find(class_='matrix matrix-breezy mb-2') # Get the Newest Children Idols Images Container
     
-    newestElement  = newestCategory.find(class_='cell') # Get the Newest Element in the Category
+    newestElement = newestCategory.find(class_='cell') # Get the Newest Element in the Category
     
     newestElementLink = newestElement.find('a')['href'] # Get the Newest Element' Image
 
@@ -38,8 +38,8 @@ async def CheckImage(bot):
     
     newestImage = "https://kpopping.com% s" % newestImageLink # Build newest Image ImageURL
     
-    print("NEW: ",newestImage) # Debug Print
-    print("OLD: ",lastImage) # Debug Print
+    #print("NEW: ",newestImage) # Debug Print
+    #print("OLD: ",lastImage) # Debug Print
     
     if newestImage != lastImage: # If the newest image is not the same as the last image
         await KPoPPost.ImagePost(bot, newestImage) # Call KPoPPost.ImagePost() Function
