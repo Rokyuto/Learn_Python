@@ -60,4 +60,10 @@ def TrackImage():
         
     # Change the Current Directory to the Project (Bot) Directory
     os.chdir(os.path.dirname(__file__))
+<<<<<<< HEAD:Bot/trackerLvl1.py
     #print("Current Directory: " , os.getcwd())
+=======
+    #print("Current Directory: " , os.getcwd())
+
+    
+>>>>>>> 2e78a75cac28d5d5882e2929a1ed439727fb1a6d:Bot/tracker.py
