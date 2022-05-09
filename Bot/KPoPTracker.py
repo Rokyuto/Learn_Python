@@ -1,4 +1,5 @@
 import os
+from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
 import KPoPPost
@@ -36,9 +37,12 @@ async def CheckImage(bot):
     
     newestImageLink = newestImageDiv.find('img')['src'] # Get the Newest Element Link / Src
     
-    newestImage = "https://kpopping.com% s" % newestImageLink # Build newest Image ImageURL
+    newestImageLinkTrim = urlparse(newestImageLink).path # Trim the Image to Remove Everithing after Image Format (.jpeg)
+
+    newestImage = "https://kpopping.com% s" % newestImageLinkTrim # Build newest Image ImageURL
     
-    #print("NEW: ",newestImage) # Debug Print
+    
+    #print("NEW: ",newestImageLinkTrim) # Debug Print
     #print("OLD: ",lastImage) # Debug Print
     
     if newestImage != lastImage: # If the newest image is not the same as the last image
