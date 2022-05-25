@@ -90,10 +90,12 @@ async def kpop_groups_list(ctx):
 async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
     idol = idolToAdd.lower()  # Format Entered Idol to lowercase
     
+    # Check if the entered idol is CORRECT y checking if the idol URL redirect to the default Wesite Page
+    
     # Check if the new idol already exist
     if idol not in idolsList:
         # Add the Entered Idol to the Idols Tracking List
-        idolsList.append(idol)
+        idolsList.append(idol)        
         idolsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order')
     else:
         await ctx.send(f'The Idol {idol} already exists in the List for Tracking')
@@ -106,6 +108,8 @@ async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
 @bot.command(pass_context=True)
 async def kpop_add_group(ctx, groupToAdd):
     group = groupToAdd.lower()  # Format Entered Group to lowercase
+    
+    # Check if the entered group is CORRECT y checking if the group URL redirect to the default Wesite Page
     
     # Check if the new idol already exist
     if group not in groupsList:
