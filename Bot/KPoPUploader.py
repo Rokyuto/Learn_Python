@@ -12,7 +12,7 @@ import os
 import requests 
 
 # Bot Token
-token = 'Nzk4NjExMTIxNTI3MzI0Njky.X_3ikA.7ya55pfd2SL6BQyZ5RQPx-X4fU8'
+token = 'token'
 
 # Bot Command Prefix
 bot = commands.Bot(command_prefix='!')
@@ -58,7 +58,7 @@ async def delay():
         await asyncio.sleep(wait_time)  # Wait the delay time
 
         # Call Tracker Function from tracker.py
-        #await KPoPTracker.CheckImage(bot)
+        await KPoPTracker.CheckImage(bot)
         # await ImageTracker() # Call Function to Track for New Image
 
 
