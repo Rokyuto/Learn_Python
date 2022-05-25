@@ -1,5 +1,6 @@
 import time
 from urllib.request import Request
+from bs4 import BeautifulSoup
 import discord
 from discord.ext import commands
 from discord.ext.commands import bot
@@ -11,7 +12,7 @@ import os
 import requests 
 
 # Bot Token
-token = 'token'
+token = 'Nzk4NjExMTIxNTI3MzI0Njky.X_3ikA.7ya55pfd2SL6BQyZ5RQPx-X4fU8'
 
 # Bot Command Prefix
 bot = commands.Bot(command_prefix='!')
@@ -57,7 +58,7 @@ async def delay():
         await asyncio.sleep(wait_time)  # Wait the delay time
 
         # Call Tracker Function from tracker.py
-        await KPoPTracker.CheckImage(bot)
+        #await KPoPTracker.CheckImage(bot)
         # await ImageTracker() # Call Function to Track for New Image
 
 
@@ -85,38 +86,83 @@ async def kpop_groups_list(ctx):
     await ctx.send(groupsList)
 
 
+# Get the Default Website Page Container
+def f_BaseURL():
+    global baseURLnewestCategory
+    # Default Website Page
+    baseURL = 'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-any/order'
+    baseURLpage = requests.get(baseURL)
+    baseURLsoup = BeautifulSoup(baseURLpage._content, 'html.parser')
+    baseURLimages = baseURLsoup.find(class_='box pics infinite')
+    baseURLnewestCategory = baseURLimages.find(class_='matrix matrix-breezy mb-2')
+    
+    return baseURLnewestCategory
+
+# Get the Entered Idol Website Page Container
+def f_IdolURL(idol):
+    idolURL = f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order'
+    idolURLpage = requests.get(idolURL)
+    idolURLsoup = BeautifulSoup(idolURLpage._content, 'html.parser')
+    idolURLimages = idolURLsoup.find(class_='box pics infinite')
+    idolURLnewestCategory = idolURLimages.find(class_='matrix matrix-breezy mb-2')
+    
+    return idolURLnewestCategory
+
+def f_GroupURL(group):
+    groupURL = f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order'
+    groupURLpage = requests.get(groupURL)
+    groupURLsoup = BeautifulSoup(groupURLpage._content, 'html.parser')
+    groupURLimages = groupURLsoup.find(class_='box pics infinite')
+    groupURLnewestCategory = groupURLimages.find(class_='matrix matrix-breezy mb-2')
+    
+    return groupURLnewestCategory
+
  # Function to Add Entered after Bot Command Idol for Tracking
 @bot.command(pass_context=True)
 async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
     idol = idolToAdd.lower()  # Format Entered Idol to lowercase
     
-    # Check if the new idol already exist
-    if idol not in idolsList:
-        # Add the Entered Idol to the Idols Tracking List
-        idolsList.append(idol)
-        idolsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order')
-    else:
-        await ctx.send(f'The Idol {idol} already exists in the List for Tracking')
+    baseURLnewestCategory = f_BaseURL() # Get the Default Website Page Container
+    idolURLnewestCategory = f_IdolURL(idol) # Get the Entered Idol Website Page Container
+    
+    # Compare the two Containers
+    if baseURLnewestCategory == idolURLnewestCategory: # If they are equal then the entered Idol is WRONG
+        await ctx.send("Entered Idol is not Valid")
+    else: # Entered Idol is Correct
+        # Check if the new idol already exist
+        if idol not in idolsList:
+            # Add the Entered Idol to the Idols Tracking List
+            idolsList.append(idol)
+            idolsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order')
+        else:
+            await ctx.send(f'The Idol {idol} already exists in the List for Tracking')
 
-    # Call Function to Update the Total List with all Groups and Idols for Tracking
-    await d_KPOPsTracking(ctx)
+        # Call Function to Update the Total List with all Groups and Idols for Tracking
+        await d_KPOPsTracking(ctx)
 
 
 # Function to Add Entered after Bot Command Group for Tracking
 @bot.command(pass_context=True)
 async def kpop_add_group(ctx, groupToAdd):
     group = groupToAdd.lower()  # Format Entered Group to lowercase
+        
+    baseURLnewestCategory = f_BaseURL() # Get the Default Website Page Container
+    groupURLnewestCategory = f_GroupURL(group) # Get the Entered Idol Website Page Container
     
-    # Check if the new idol already exist
-    if group not in groupsList:
-        # Add the Entered Group to the Idols Tracking List
-        groupsList.append(group)
-        groupsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order')
-    else:
-        await ctx.send(f'The Group {group} already exists in the List for Tracking')
+    # Compare the two Containers
+    if baseURLnewestCategory == groupURLnewestCategory: # If they are equal then the entered Idol is WRONG
+        await ctx.send("Entered Group is not Valid")
+    else: # Entered Idol is Correct
+        # Check if the new idol already exist
+        if group not in groupsList:
+            # Add the Entered Group to the Groups Tracking List
+            groupsList.append(group)
+            groupsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order')
+        else:
+            await ctx.send(f'The Group {group} already exists in the List for Tracking')
 
-    # Call Function to Update the Total List with all Groups and Idols for Tracking
-    await d_KPOPsTracking(ctx)
+        # Call Function to Update the Total List with all Groups and Idols for Tracking
+        await d_KPOPsTracking(ctx)
 
 
 # Clear the Idols Tracking List

@@ -6,10 +6,10 @@ import KPoPPost
 
 #global newestImage
 lastImage = None # Last Image Initial Value
+newestElementHREF = None # Last Image Initial Value
 
-async def CheckImage(bot):
-    global lastImage # Initialize Last Image
-
+def FindNewestImage():
+    global newestElementHREF
     URL = 'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-any/order' # Website URL
 
     page = requests.get(URL) # Call the Website
@@ -22,12 +22,19 @@ async def CheckImage(bot):
     
     newestElement = newestCategory.find(class_='cell') # Get the Newest Element in the Category
     
-    newestElementLink = newestElement.find('a')['href'] # Get the Newest Element' Image
+    newestElementHREF = newestElement.find('a')['href'] # Get the Newest Element' Image
+    
+    return newestElementHREF # Return and Update the newest Element href 
 
+
+async def CheckImage(bot):
+    global lastImage # Initialize Last Image
+    FindNewestImage() # Call Finding Newest Image href function
+    
     #newestElementName = newestElementImg['src'] # Get the Newest Element Name
     #newestElementNameFormated = newestElementName.replace(" ", "-").replace("---", "-") # Forma the Newest Element Name
     
-    newestElementLink = "https://kpopping.com% s" % newestElementLink #  Newest Element Website URL
+    newestElementLink = "https://kpopping.com% s" % newestElementHREF #  Newest Element Website URL
 
     newestElementPage = requests.get(newestElementLink)# Newest Element URL 
     
