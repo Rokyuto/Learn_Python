@@ -23,6 +23,9 @@ async def CheckImage(bot):
     newestElement = newestCategory.find(class_='cell') # Get the Newest Element in the Category
     
     newestElementLink = newestElement.find('a')['href'] # Get the Newest Element' Image
+    
+    
+    
 
     #newestElementName = newestElementImg['src'] # Get the Newest Element Name
     #newestElementNameFormated = newestElementName.replace(" ", "-").replace("---", "-") # Forma the Newest Element Name
