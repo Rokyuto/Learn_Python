@@ -7,6 +7,7 @@ import KPoPPost
 #global newestImage
 lastImage = None # Last Image Initial Value
 newestElementHREF = None # Last Image Initial Value
+lastKPOPImages = None # List with last Image for each kpop
 
 def FindNewestImage():
     global newestElementHREF
@@ -27,8 +28,9 @@ def FindNewestImage():
     return newestElementHREF # Return and Update the newest Element href 
 
 
-async def CheckImage(bot):
+async def CheckImage(bot,KPOPLinksList):
     global lastImage # Initialize Last Image
+    print(KPOPLinksList)
     FindNewestImage() # Call Finding Newest Image href function
     
     #newestElementName = newestElementImg['src'] # Get the Newest Element Name

@@ -43,11 +43,11 @@ KPOPLinksList = idolsLinksList + groupsLinksList
 @bot.event
 async def on_ready():
     print("Connected...")
-    await delay()
+    #await f_delayed_call() # Call the function when the bot is Started
 
 
-# Loop the Bot
-async def delay():
+# Loop the Bot and call Image Check from KPOP Tracker File with 2 seconds timeout
+async def f_delayed_call():
     while True:  # Infinity Loop
 
         # Calculate the delay
@@ -58,7 +58,7 @@ async def delay():
         await asyncio.sleep(wait_time)  # Wait the delay time
 
         # Call Tracker Function from tracker.py
-        await KPoPTracker.CheckImage(bot)
+        await KPoPTracker.CheckImage(bot,KPOPLinksList)
         # await ImageTracker() # Call Function to Track for New Image
 
 
@@ -121,6 +121,9 @@ def f_GroupURL(group):
 @bot.command(pass_context=True)
 async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
     idol = idolToAdd.lower()  # Format Entered Idol to lowercase
+    
+    #f_BaseURL()
+    #f_IdolURL(idol)
     
     baseURLnewestCategory = f_BaseURL() # Get the Default Website Page Container
     idolURLnewestCategory = f_IdolURL(idol) # Get the Entered Idol Website Page Container
