@@ -42,7 +42,9 @@ KPOPLinksList = idolsLinksList + groupsLinksList
 # Startup Bot
 @bot.event
 async def on_ready():
-    print("Connected...")
+    #print("Connected...")
+    channel = bot.get_channel(971514773634162769)
+    await channel.send("I'm online :)")
     await f_delayed_call() # Call the function when the bot is Started
 
 
@@ -194,7 +196,7 @@ async def kpop_remove_idol(ctx, idolToRemove):
         # Remove Idol Link from IdolsLinks List
         idolLinkIndex = idolsList.index(idol)
         idolsLinksList.pop(idolLinkIndex) # Pop = remove
-        print(idolsLinksList)
+        #print(idolsLinksList)
         
         # Remove the Entered Idol from the Idols Tracking List
         idolsList.remove(idol)
@@ -218,7 +220,7 @@ async def kpop_remove_group(ctx, groupToRemove):
         # Remove Group Link from GroupsLinks List
         groupLinkIndex = idolsList.index(group)
         groupsLinksList.pop(groupLinkIndex) # Pop = remove
-        print(groupsLinksList)
+        #print(groupsLinksList)
         
         # Remove the Entered Group from the Groups Tracking List
         groupsList.remove(group)
