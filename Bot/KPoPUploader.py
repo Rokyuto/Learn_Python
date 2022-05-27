@@ -35,9 +35,8 @@ idolsList = []
 groupsLinksList = []
 idolsLinksList = []
 
-KPOPlist = None  # Total List with all Groups and Idols for Tracking
-KPOPLinksList = idolsLinksList + groupsLinksList
-
+KPOPlist = []  # Total List with all Groups and Idols for Tracking
+KPOPLinksList = []
 
 # Startup Bot
 @bot.event
@@ -110,6 +109,7 @@ def f_IdolURL(idol):
     
     return idolURLnewestCategory
 
+# Get the Entered Group Website Page Container
 def f_GroupURL(group):
     groupURL = f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order'
     groupURLpage = requests.get(groupURL)
@@ -122,10 +122,8 @@ def f_GroupURL(group):
  # Function to Add Entered after Bot Command Idol for Tracking
 @bot.command(pass_context=True)
 async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
-    idol = idolToAdd.lower()  # Format Entered Idol to lowercase
     
-    #f_BaseURL()
-    #f_IdolURL(idol)
+    idol = idolToAdd.lower()  # Format Entered Idol to lowercase
     
     baseURLnewestCategory = f_BaseURL() # Get the Default Website Page Container
     idolURLnewestCategory = f_IdolURL(idol) # Get the Entered Idol Website Page Container
@@ -135,10 +133,12 @@ async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
         await ctx.send("Entered Idol is not Valid")
     else: # Entered Idol is Correct
         # Check if the new idol already exist
-        if idol not in idolsList:
+        if idol not in KPOPlist:
             # Add the Entered Idol to the Idols Tracking List
             idolsList.append(idol)
             idolsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order')
+            KPOPlist.append(idol)
+            KPOPLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order')
         else:
             await ctx.send(f'The Idol {idol} already exists in the List for Tracking')
 
@@ -159,10 +159,14 @@ async def kpop_add_group(ctx, groupToAdd):
         await ctx.send("Entered Group is not Valid")
     else: # Entered Idol is Correct
         # Check if the new idol already exist
-        if group not in groupsList:
+        if group not in KPOPlist:
             # Add the Entered Group to the Groups Tracking List
             groupsList.append(group)
             groupsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order')
+            
+            KPOPlist.append(group)
+            KPOPLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order')
+            
         else:
             await ctx.send(f'The Group {group} already exists in the List for Tracking')
 
@@ -173,17 +177,30 @@ async def kpop_add_group(ctx, groupToAdd):
 # Clear the Idols Tracking List
 @bot.command(pass_context=True)
 async def kpop_clear_idols_list(ctx):
+    global KPOPlist
+    global KPOPLinksList
     idolsList.clear()
+    idolsLinksList.clear()
+    KPOPlist = idolsList + groupsList
+    KPOPLinksList = idolsLinksList + groupsLinksList
+    
     # Clear idols links list
     await ctx.send("Clearing List with Idol for Tracking")
-
+    await ctx.send(KPOPlist)
+    
 
 # Clear the Groups Tracking List
 @bot.command(pass_context=True)
 async def kpop_clear_groups_list(ctx):
+    global KPOPlist
+    global KPOPLinksList
     groupsList.clear()
+    groupsLinksList.clear()
+    KPOPlist = idolsList + groupsList
+    KPOPLinksList = idolsLinksList + groupsLinksList
     # Clear groups links list
     await ctx.send("Clearing Groups List for Tracking")
+    await ctx.send(KPOPlist)
 
 
 # Function to Remove Entered after Bot Command Idol for Tracking
@@ -196,15 +213,21 @@ async def kpop_remove_idol(ctx, idolToRemove):
         # Remove Idol Link from IdolsLinks List
         idolLinkIndex = idolsList.index(idol)
         idolsLinksList.pop(idolLinkIndex) # Pop = remove
+        linkIndex = KPOPlist.index(idol)
+        KPOPLinksList.pop(linkIndex)
         #print(idolsLinksList)
         
         # Remove the Entered Idol from the Idols Tracking List
         idolsList.remove(idol)
+        KPOPlist.remove(idol)
         # Print what happened
         await ctx.send(f'Removing {idol} from Tracking List')
+        
+        print(KPOPlist)
+        
 
         # Call Function to Update the Total List with all Groups and Idols for Tracking
-        await d_KPOPsTracking(ctx)
+        #await d_KPOPsTracking(ctx)
 
     else:
         await ctx.send(f'The Entered Idol : {idol} do not exist in the Idols Tracking List')
@@ -218,17 +241,20 @@ async def kpop_remove_group(ctx, groupToRemove):
     if group in groupsList:
         
         # Remove Group Link from GroupsLinks List
-        groupLinkIndex = idolsList.index(group)
+        groupLinkIndex = groupsList.index(group)
         groupsLinksList.pop(groupLinkIndex) # Pop = remove
+        linkIndex = KPOPlist.index(group)
+        KPOPLinksList.pop(linkIndex)
         #print(groupsLinksList)
         
         # Remove the Entered Group from the Groups Tracking List
         groupsList.remove(group)
+        KPOPlist.remove(group)
         # Print what happened
         await ctx.send(f'Removing {group} from Tracking List')
 
         # Call Function to Update the Total List with all Groups and Idols for Tracking
-        await d_KPOPsTracking(ctx)
+        #await d_KPOPsTracking(ctx)
 
     else:
         await ctx.send(f'The Entered Group : {group} do not exist in the Groups Tracking List')
@@ -236,11 +262,11 @@ async def kpop_remove_group(ctx, groupToRemove):
 
 # Function to Update KPOPs for Tracking
 async def d_KPOPsTracking(ctx):
-    global KPOPlist
-    global KPOPLinksList
-    # Update Total List with all Groups and Idols for Tracking and Their Links
-    KPOPlist = idolsList + groupsList
-    KPOPLinksList = idolsLinksList + groupsLinksList # Update the list with all KPOPs Links
+    # global KPOPlist
+    # global KPOPLinksList
+    # # Update Total List with all Groups and Idols for Tracking and Their Links
+    # KPOPlist = idolsList + groupsList
+    # KPOPLinksList = idolsLinksList + groupsLinksList # Update the list with all KPOPs Links
     KPoPTracker.f_FillLastKPOPImagesList(KPOPLinksList) # Update the last KPOP Images List's size
     await ctx.send(f'KPOPs for Tracking: {KPOPlist}')  # Print the List
     

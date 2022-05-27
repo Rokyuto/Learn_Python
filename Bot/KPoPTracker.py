@@ -18,7 +18,7 @@ def f_FillLastKPOPImagesList(KPOPLinksList):
         lastKPOPImagesList.append(None) # The lastKPOPImagesList will receive new Index and the Value will be None
          
         # Debug Prints   
-        # print("KPOPLinksList ", len(KPOPLinksList))
+        print("KPOPLinksList ", len(KPOPLinksList))
         # print("lastKPOPImagesList ", len(lastKPOPImagesList))
         # print("lastKPOPImagesList elements" , lastKPOPImagesList)
         
@@ -71,15 +71,15 @@ async def CheckImage(bot,KPOPLinksList):
 
             newestImage = "https://kpopping.com% s" % newestImageLinkTrim # Build newest Image ImageURL
             
-            
             #print("NEW: ",newestImageLinkTrim) # Debug Print
             #print("OLD: ",lastImage) # Debug Print
             # Debug Prints
-            #print("Link: " , link)
-            currentLinkIndex = KPOPLinksList.index(link)
+            # print("Link: " , link)
+            currentLinkIndex = KPOPLinksList.index(link) # Get the Index of the current Link
             # print("Current Link Index: " , currentLinkIndex)
-            # print("lastKPOPImagesList Range: ", len(lastKPOPImagesList))
+            # # print("lastKPOPImagesList Range: ", len(lastKPOPImagesList))
             # print("lastKPOPImagesList: " , lastKPOPImagesList)
+            # print("newestImage: " , newestImage)
             
             # Error with lastKPOPImagesList lenght
             
