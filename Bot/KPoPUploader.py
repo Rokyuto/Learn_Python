@@ -12,7 +12,7 @@ import os
 import requests 
 
 # Bot Token
-token = 'token'
+token = 'Nzk4NjExMTIxNTI3MzI0Njky.Gc5F0O.xJga6IsAtusXLdOztiqPPRKKNvmt3GG412NM-Q'
 
 # Bot Command Prefix
 bot = commands.Bot(command_prefix='!')
@@ -238,7 +238,8 @@ async def d_KPOPsTracking(ctx):
     global KPOPLinksList
     # Update Total List with all Groups and Idols for Tracking and Their Links
     KPOPlist = idolsList + groupsList
-    KPOPLinksList = idolsLinksList + groupsLinksList
+    KPOPLinksList = idolsLinksList + groupsLinksList # Update the list with all KPOPs Links
+    KPoPTracker.f_FillLastKPOPImagesList(KPOPLinksList) # Update the last KPOP Images List's size
     await ctx.send(f'KPOPs for Tracking: {KPOPlist}')  # Print the List
     
 
