@@ -7,7 +7,7 @@ import KPoPPost
 #global newestImage
 lastImage = None # Last Image Initial Value
 newestElementHREF = None # Last Image Initial Value
-lastKPOPImages = None # List with last Image for each kpop
+lastKPOPImages = [] # List with Last Image for each KPOP Link
 
 def FindNewestImage():
     global newestElementHREF
@@ -29,34 +29,37 @@ def FindNewestImage():
 
 
 async def CheckImage(bot,KPOPLinksList):
-    global lastImage # Initialize Last Image
-    print(KPOPLinksList)
-    FindNewestImage() # Call Finding Newest Image href function
-    
-    #newestElementName = newestElementImg['src'] # Get the Newest Element Name
-    #newestElementNameFormated = newestElementName.replace(" ", "-").replace("---", "-") # Forma the Newest Element Name
-    
-    newestElementLink = "https://kpopping.com% s" % newestElementHREF #  Newest Element Website URL
+    #print(KPOPLinksList) # Debug Print
+    # Check if the KPOP Links List has any Links
+    if (len(KPOPLinksList) > 0): # If TRUE then it will go Check for new Images in this Link
+        #for link in KPOPLinksList:          
+        global lastImage # Initialize Last Image
+        FindNewestImage() # Call Finding Newest Image href function
+        
+        #newestElementName = newestElementImg['src'] # Get the Newest Element Name
+        #newestElementNameFormated = newestElementName.replace(" ", "-").replace("---", "-") # Forma the Newest Element Name
+        
+        newestElementLink = "https://kpopping.com% s" % newestElementHREF #  Newest Element Website URL
 
-    newestElementPage = requests.get(newestElementLink)# Newest Element URL 
-    
-    newestElementSoup = BeautifulSoup(newestElementPage._content, 'html.parser') # Parse the Website to be able to get information || Get all information in the website 
-    
-    newestImageDiv = newestElementSoup.find(class_='justified-gallery') # Get the Newest Element Div Object
-    
-    newestImageLink = newestImageDiv.find('img')['src'] # Get the Newest Element Link / Src
-    
-    newestImageLinkTrim = urlparse(newestImageLink).path # Trim the Image to Remove Everithing after Image Format (.jpeg)
+        newestElementPage = requests.get(newestElementLink)# Newest Element URL 
+        
+        newestElementSoup = BeautifulSoup(newestElementPage._content, 'html.parser') # Parse the Website to be able to get information || Get all information in the website 
+        
+        newestImageDiv = newestElementSoup.find(class_='justified-gallery') # Get the Newest Element Div Object
+        
+        newestImageLink = newestImageDiv.find('img')['src'] # Get the Newest Element Link / Src
+        
+        newestImageLinkTrim = urlparse(newestImageLink).path # Trim the Image to Remove Everithing after Image Format (.jpeg)
 
-    newestImage = "https://kpopping.com% s" % newestImageLinkTrim # Build newest Image ImageURL
-    
-    
-    #print("NEW: ",newestImageLinkTrim) # Debug Print
-    #print("OLD: ",lastImage) # Debug Print
-    
-    if newestImage != lastImage: # If the newest image is not the same as the last image
-        await KPoPPost.ImagePost(bot, newestImage) # Call KPoPPost.ImagePost() Function
-        lastImage = newestImage # Update last Image
+        newestImage = "https://kpopping.com% s" % newestImageLinkTrim # Build newest Image ImageURL
+        
+        
+        #print("NEW: ",newestImageLinkTrim) # Debug Print
+        #print("OLD: ",lastImage) # Debug Print
+        
+        if newestImage != lastImage: # If the newest image is not the same as the last image
+            await KPoPPost.ImagePost(bot, newestImage) # Call KPoPPost.ImagePost() Function
+            lastImage = newestImage # Update last Image
     
     #return newestImage, isNew, lastImage
 

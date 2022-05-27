@@ -43,7 +43,7 @@ KPOPLinksList = idolsLinksList + groupsLinksList
 @bot.event
 async def on_ready():
     print("Connected...")
-    #await f_delayed_call() # Call the function when the bot is Started
+    await f_delayed_call() # Call the function when the bot is Started
 
 
 # Loop the Bot and call Image Check from KPOP Tracker File with 2 seconds timeout
