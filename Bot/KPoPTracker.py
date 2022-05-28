@@ -4,8 +4,6 @@ import requests
 from bs4 import BeautifulSoup
 import KPoPPost
 
-#global newestImage
-#lastImage = None # Last Image Initial Value
 # Initialize Variables
 newestElementHREF = None # Last Image Initial Value
 lastKPOPImagesList = [] # List with Last Image for each KPOP Link
@@ -13,16 +11,7 @@ lastKPOPImagesList = [] # List with Last Image for each KPOP Link
 # Function to change lastKPOPImagesList size when the user add new KPOP for tracking
 def f_FillLastKPOPImagesList(KPOPLinksList):
     if len(lastKPOPImagesList) < len(KPOPLinksList): # If lastKPOPImagesList is smaller than KPoPLinksList
-        #for index in range(len(lastKPOPImagesList), len(KPOPLinksList)): # The lastKPOPImagesList will receive new Index 
-            #print ("Filling index: ", index)
         lastKPOPImagesList.append(None) # The lastKPOPImagesList will receive new Index and the Value will be None
-         
-        # Debug Prints   
-        print("KPOPLinksList ", len(KPOPLinksList))
-        # print("lastKPOPImagesList ", len(lastKPOPImagesList))
-        # print("lastKPOPImagesList elements" , lastKPOPImagesList)
-        
-    #lastKPOPImagesList = [None] * len(KPOPLinksList)
     
 
 def FindNewestImage(KPOPLink):
@@ -46,8 +35,6 @@ def FindNewestImage(KPOPLink):
 
 
 async def CheckImage(bot,KPOPLinksList):
-    #print(KPOPLinksList) # Debug Print
-    
     # Check if the KPOP Links List has any Links
     if (len(KPOPLinksList) > 0): # If TRUE then it will go Check for new Images in this Link else (if false) the bot won't do anything
         for link in KPOPLinksList:          
@@ -70,18 +57,8 @@ async def CheckImage(bot,KPOPLinksList):
             newestImageLinkTrim = urlparse(newestImageLink).path # Trim the Image to Remove Everithing after Image Format (.jpeg)
 
             newestImage = "https://kpopping.com% s" % newestImageLinkTrim # Build newest Image ImageURL
-            
-            #print("NEW: ",newestImageLinkTrim) # Debug Print
-            #print("OLD: ",lastImage) # Debug Print
-            # Debug Prints
-            # print("Link: " , link)
+
             currentLinkIndex = KPOPLinksList.index(link) # Get the Index of the current Link
-            # print("Current Link Index: " , currentLinkIndex)
-            # # print("lastKPOPImagesList Range: ", len(lastKPOPImagesList))
-            # print("lastKPOPImagesList: " , lastKPOPImagesList)
-            # print("newestImage: " , newestImage)
-            
-            # Error with lastKPOPImagesList lenght
             
             # if newestImage != lastImage: # If the newest image is not the same as the last image
             #     await KPoPPost.ImagePost(bot, newestImage) # Call KPoPPost.ImagePost() Function
@@ -90,10 +67,4 @@ async def CheckImage(bot,KPOPLinksList):
             if newestImage != lastKPOPImagesList[currentLinkIndex]:
                 await KPoPPost.ImagePost(bot, newestImage) # Call KPoPPost.ImagePost() Function
                 lastKPOPImagesList[currentLinkIndex] = newestImage # Update the last Image for current KPoP
-    
-    #return newestImage, isNew, lastImage
-
-
-#TrackImage()
-#print("NEW" , newestImage)
-#print("Old: ", lastImage)
+                
