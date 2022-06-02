@@ -12,7 +12,7 @@ import os
 import requests 
 
 # Bot Token
-token = 'Nzk4NjExMTIxNTI3MzI0Njky.Gc5F0O.xJga6IsAtusXLdOztiqPPRKKNvmt3GG412NM-Q'
+token = 'token'
 
 # Bot Command Prefix
 bot = commands.Bot(command_prefix='!')
