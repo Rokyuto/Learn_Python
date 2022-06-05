@@ -2,7 +2,7 @@ import qrcode
 import os
 
 # Site
-site = "https://github.com/Rokyuto" # My Site
+site = "https://github.com/Rokyuto" # My Site -  - http://rokyuto.hopto.org/Home.html
 # QR Code Image name
 filename = "qrCode.png"
 # Create a QR Code
