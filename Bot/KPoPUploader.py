@@ -225,7 +225,6 @@ async def kpop_remove_idol(ctx, idolToRemove):
         
         print(KPOPlist)
         
-
         # Call Function to Update the Total List with all Groups and Idols for Tracking
         #await d_KPOPsTracking(ctx)
 

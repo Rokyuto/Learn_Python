@@ -48,9 +48,18 @@ async def CheckImage(bot,KPOPLinksList):
         global lastImage # Initialize Last Image
         f_SearchMachine(baseURL)
         
-        if newestImage != lastImage: # If the newest image is not the same as the last image
+        with open('lastLink.txt', "r+") as lastLinkFile:
+            lastLink = lastLinkFile.read()
+        
+        if newestImage != lastImage and newestImage != lastLink: # If the newest image is not the same as the last image and is different from the saved link in lastLink.txt 
                 await KPoPPost.ImagePost(bot, newestImage) # Call KPoPPost.ImagePost() Function
                 lastImage = newestImage # Update last Image
+                # Update the Link in lastLink.txt to the newest
+                with open('lastLink.txt', "w") as lastLinkFile:
+                    lastLinkFile.write(newestImage)
+                    print("Updated lastLink.txt with the newestImage")
+        else: # If the newest image is the same as the last link in lastLink.txt or the same as the lastImage
+            print("The newestImage is the Same as the last")
 
 
 # Funtion to get the newest Image from newest Element HREF
