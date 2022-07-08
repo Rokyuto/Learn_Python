@@ -12,7 +12,7 @@ import os
 import requests 
 
 # Bot Token
-token = 'token'
+token = 'Nzk4NjExMTIxNTI3MzI0Njky.GQxTfn.Icby0EmWzku1HGiaAYF6bcJteYSJYOOM-e9Qyk'
 
 # Bot Command Prefix
 bot = commands.Bot(command_prefix='!')
@@ -43,14 +43,41 @@ KPOPLinksList = []
 async def on_ready():
     #print("Connected...")
     channel = bot.get_channel(971514773634162769)
-    await channel.send("I'm online :)")
+    #await channel.send("I'm online :)")
+    f_restoreLists() # Restore Bot Searching Filters
     await f_delayed_call() # Call the function when the bot is Started
+
+def f_restoreLists():
+    global groupsList, idolsList, groupsLinksList, idolsLinksList
+    # If any of the filters txt documents is not empty then fill Filters Lists
+    if(os.path.getsize('txt/groupsList.txt') != 0 or os.path.getsize('txt/idolsList.txt') != 0 or os.path.getsize('txt/groupsLinksList.txt') != 0 or os.path.getsize('txt/idolsLinksList.txt') != 0):  
+        with open('txt/groupsList.txt', "r") as groupsFilterList:
+            allLines_groupsFilterList = groupsFilterList.readlines()
+            groupsList = [line_allLines_groupsFilterList[:-1] for line_allLines_groupsFilterList in allLines_groupsFilterList]
+        with open('txt/idolsList.txt', "r") as idolsFilterList:
+            allLines_idolsFilterList = idolsFilterList.readlines()
+            idolsList = [line_allLines_idolsFilterList[:-1] for line_allLines_idolsFilterList in allLines_idolsFilterList]
+        with open('txt/groupsLinksList.txt', "r") as groupsLinksFilterList:
+            allLines_groupsLinksFilterList = groupsLinksFilterList.readlines()
+            groupsLinksList = [line_allLines_groupsLinksFilterList[:-1] for line_allLines_groupsLinksFilterList in allLines_groupsLinksFilterList]
+        with open('txt/idolsLinksList.txt', "r") as idolsLinksLinksFilterList:
+            allLines_idolsLinksLinksFilterList = idolsLinksLinksFilterList.readlines()
+            idolsLinksList = [line_allLines_idolsLinksLinksFilterList[:-1] for line_allLines_idolsLinksLinksFilterList in allLines_idolsLinksLinksFilterList]
+        
+        KPOPlist.extend(groupsList)
+        KPOPlist.extend(idolsList)
+
+        KPOPLinksList.extend(groupsLinksList)
+        KPOPLinksList.extend(idolsLinksList)
+        
+        KPoPTracker.f_RestoreLastKPOPImagesList()
+    
+    return KPOPlist, KPOPLinksList, groupsList, idolsList, groupsLinksList, idolsLinksList # Return and Save Filters Lists
 
 
 # Loop the Bot and call Image Check from KPOP Tracker File with 2 seconds timeout
 async def f_delayed_call():
     while True:  # Infinity Loop
-
         # Calculate the delay
         now = datetime.datetime.now()
         then = now+datetime.timedelta(seconds=2)
@@ -60,7 +87,6 @@ async def f_delayed_call():
 
         # Call Tracker Function from tracker.py
         await KPoPTracker.CheckImage(bot,KPOPLinksList)
-        # await ImageTracker() # Call Function to Track for New Image
 
 
 # Display All Bot Commands Function
@@ -137,8 +163,20 @@ async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
             # Add the Entered Idol to the Idols Tracking List
             idolsList.append(idol)
             idolsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order')
+            
             KPOPlist.append(idol)
             KPOPLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order')
+            
+            # Append the new Idol to the idolsList.txt file
+            with open('txt/idolsList.txt', "a") as idolsFilterList:
+                idolsFilterList.write(f"{idol}\n")
+            # Append the new IdolLink to the idolsLinksList.txt file
+            with open('txt/idolsLinksList.txt', "a") as idolsLinksFilterList:
+                idolsLinksFilterList.write(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order\n')
+            
+            print(KPOPlist)
+            print(KPOPLinksList)
+            
         else:
             await ctx.send(f'The Idol {idol} already exists in the List for Tracking')
 
@@ -164,6 +202,13 @@ async def kpop_add_group(ctx, groupToAdd):
             groupsList.append(group)
             groupsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order')
             
+            # Append the new Group to the groupsList.txt file
+            with open('txt/groupsList.txt', "a") as groupsFilterList:
+                groupsFilterList.write(f"{group}\n")
+            # Append the new GroupLink to the groupsLinksList.txt file
+            with open('txt/groupsLinksList.txt', "a") as groupsLinksFilterList:
+                groupsLinksFilterList.write(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order\n')
+            
             KPOPlist.append(group)
             KPOPLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order')
             
@@ -179,8 +224,29 @@ async def kpop_add_group(ctx, groupToAdd):
 async def kpop_clear_idols_list(ctx):
     global KPOPlist
     global KPOPLinksList
+    
+    with open('txt/lastFilterImages.txt','r+') as lastFilterImages:
+        overrideLastFilterImages = open('txt/lastFilterImages.txt', 'w')
+        #idolsFilterImagesTemp = open('txt/IdolsFilterImagesTemp.txt','w')
+        for line in lastFilterImages:
+            for idol in KPOPlist:
+                if not line.lower().__contains__(idol):
+                    overrideLastFilterImages.write(line)
+    
+    
+    lines = lastFilterImages.readlines()                
+    overrideLastFilterImages.writelines(lines[:-1])
+    
+    
     idolsList.clear()
     idolsLinksList.clear()
+    
+    # Clear the data/text in idols txt documents
+    with open('txt/idolsList.txt', "w") as idolsFilterList:
+        idolsFilterList.close()
+    with open('txt/idolsLinksList.txt', "w") as idolsLinksFilterList:
+        idolsLinksFilterList.close()
+    
     KPOPlist = idolsList + groupsList
     KPOPLinksList = idolsLinksList + groupsLinksList
     
@@ -194,10 +260,19 @@ async def kpop_clear_idols_list(ctx):
 async def kpop_clear_groups_list(ctx):
     global KPOPlist
     global KPOPLinksList
+ 
     groupsList.clear()
     groupsLinksList.clear()
+
+    # Clear the data/text in groups txt documents
+    with open('txt/groupsList.txt', "w") as groupsFilterList:
+        groupsFilterList.close()
+    with open('txt/groupsLinksList.txt', "w") as groupsLinksFilterList:
+        groupsLinksFilterList.close()
+    
     KPOPlist = idolsList + groupsList
     KPOPLinksList = idolsLinksList + groupsLinksList
+    
     # Clear groups links list
     await ctx.send("Clearing Groups List for Tracking")
     await ctx.send(KPOPlist)
@@ -209,7 +284,6 @@ async def kpop_remove_idol(ctx, idolToRemove):
     idol = idolToRemove.lower()  # Format Entered Idol to lowercase
         
     if idol in idolsList:
-        
         # Remove Idol Link from IdolsLinks List
         idolLinkIndex = idolsList.index(idol)
         idolsLinksList.pop(idolLinkIndex) # Pop = remove
@@ -220,14 +294,18 @@ async def kpop_remove_idol(ctx, idolToRemove):
         # Remove the Entered Idol from the Idols Tracking List
         idolsList.remove(idol)
         KPOPlist.remove(idol)
+        
+        # Update the data/text in the idols txt documents
+        with open('txt/idolsList.txt', "w") as idolsFilterList:
+            for x in idolsList:
+                idolsFilterList.writelines(f"{x}\n")     
+        with open('txt/idolsLinksList.txt', "w") as idolsLinksFilterList:
+            for x in idolsLinksList:
+                idolsLinksFilterList.writelines(f"{x}\n")
+           
         # Print what happened
         await ctx.send(f'Removing {idol} from Tracking List')
         
-        print(KPOPlist)
-        
-        # Call Function to Update the Total List with all Groups and Idols for Tracking
-        #await d_KPOPsTracking(ctx)
-
     else:
         await ctx.send(f'The Entered Idol : {idol} do not exist in the Idols Tracking List')
 
@@ -238,7 +316,6 @@ async def kpop_remove_group(ctx, groupToRemove):
     group = groupToRemove.lower()  # Format Entered Group to lowercase
     
     if group in groupsList:
-        
         # Remove Group Link from GroupsLinks List
         groupLinkIndex = groupsList.index(group)
         groupsLinksList.pop(groupLinkIndex) # Pop = remove
@@ -249,11 +326,17 @@ async def kpop_remove_group(ctx, groupToRemove):
         # Remove the Entered Group from the Groups Tracking List
         groupsList.remove(group)
         KPOPlist.remove(group)
+        
+        # Update the data/text in the groups txt documents
+        with open('txt/groupsList.txt', "w") as groupsFilterList:
+            for x in groupsList:
+                groupsFilterList.writelines(f"{x}\n")
+        with open('txt/groupsLinksList.txt', "w") as groupsLinksFilterList:
+            for x in groupsLinksList:
+                groupsLinksFilterList.writelines(f"{x}\n")
+
         # Print what happened
         await ctx.send(f'Removing {group} from Tracking List')
-
-        # Call Function to Update the Total List with all Groups and Idols for Tracking
-        #await d_KPOPsTracking(ctx)
 
     else:
         await ctx.send(f'The Entered Group : {group} do not exist in the Groups Tracking List')
@@ -261,11 +344,6 @@ async def kpop_remove_group(ctx, groupToRemove):
 
 # Function to Update KPOPs for Tracking
 async def d_KPOPsTracking(ctx):
-    # global KPOPlist
-    # global KPOPLinksList
-    # # Update Total List with all Groups and Idols for Tracking and Their Links
-    # KPOPlist = idolsList + groupsList
-    # KPOPLinksList = idolsLinksList + groupsLinksList # Update the list with all KPOPs Links
     KPoPTracker.f_FillLastKPOPImagesList(KPOPLinksList) # Update the last KPOP Images List's size
     await ctx.send(f'KPOPs for Tracking: {KPOPlist}')  # Print the List
     
