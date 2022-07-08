@@ -12,7 +12,7 @@ import os
 import requests 
 
 # Bot Token
-token = 'Nzk4NjExMTIxNTI3MzI0Njky.GQxTfn.Icby0EmWzku1HGiaAYF6bcJteYSJYOOM-e9Qyk'
+token = 'myToken'
 
 # Bot Command Prefix
 bot = commands.Bot(command_prefix='!')
@@ -43,8 +43,8 @@ KPOPLinksList = []
 async def on_ready():
     #print("Connected...")
     channel = bot.get_channel(971514773634162769)
-    #await channel.send("I'm online :)")
-    f_restoreLists() # Restore Bot Searching Filters
+    await channel.send("I'm online :)")
+    #f_restoreLists() # Restore Bot Searching Filters
     await f_delayed_call() # Call the function when the bot is Started
 
 def f_restoreLists():
@@ -167,16 +167,6 @@ async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
             KPOPlist.append(idol)
             KPOPLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order')
             
-            # Append the new Idol to the idolsList.txt file
-            with open('txt/idolsList.txt', "a") as idolsFilterList:
-                idolsFilterList.write(f"{idol}\n")
-            # Append the new IdolLink to the idolsLinksList.txt file
-            with open('txt/idolsLinksList.txt', "a") as idolsLinksFilterList:
-                idolsLinksFilterList.write(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order\n')
-            
-            print(KPOPlist)
-            print(KPOPLinksList)
-            
         else:
             await ctx.send(f'The Idol {idol} already exists in the List for Tracking')
 
@@ -187,6 +177,7 @@ async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
 # Function to Add Entered after Bot Command Group for Tracking
 @bot.command(pass_context=True)
 async def kpop_add_group(ctx, groupToAdd):
+    
     group = groupToAdd.lower()  # Format Entered Group to lowercase
         
     baseURLnewestCategory = f_BaseURL() # Get the Default Website Page Container
@@ -201,13 +192,6 @@ async def kpop_add_group(ctx, groupToAdd):
             # Add the Entered Group to the Groups Tracking List
             groupsList.append(group)
             groupsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order')
-            
-            # Append the new Group to the groupsList.txt file
-            with open('txt/groupsList.txt', "a") as groupsFilterList:
-                groupsFilterList.write(f"{group}\n")
-            # Append the new GroupLink to the groupsLinksList.txt file
-            with open('txt/groupsLinksList.txt', "a") as groupsLinksFilterList:
-                groupsLinksFilterList.write(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order\n')
             
             KPOPlist.append(group)
             KPOPLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order')
@@ -225,27 +209,8 @@ async def kpop_clear_idols_list(ctx):
     global KPOPlist
     global KPOPLinksList
     
-    with open('txt/lastFilterImages.txt','r+') as lastFilterImages:
-        overrideLastFilterImages = open('txt/lastFilterImages.txt', 'w')
-        #idolsFilterImagesTemp = open('txt/IdolsFilterImagesTemp.txt','w')
-        for line in lastFilterImages:
-            for idol in KPOPlist:
-                if not line.lower().__contains__(idol):
-                    overrideLastFilterImages.write(line)
-    
-    
-    lines = lastFilterImages.readlines()                
-    overrideLastFilterImages.writelines(lines[:-1])
-    
-    
     idolsList.clear()
     idolsLinksList.clear()
-    
-    # Clear the data/text in idols txt documents
-    with open('txt/idolsList.txt', "w") as idolsFilterList:
-        idolsFilterList.close()
-    with open('txt/idolsLinksList.txt', "w") as idolsLinksFilterList:
-        idolsLinksFilterList.close()
     
     KPOPlist = idolsList + groupsList
     KPOPLinksList = idolsLinksList + groupsLinksList
@@ -264,12 +229,6 @@ async def kpop_clear_groups_list(ctx):
     groupsList.clear()
     groupsLinksList.clear()
 
-    # Clear the data/text in groups txt documents
-    with open('txt/groupsList.txt', "w") as groupsFilterList:
-        groupsFilterList.close()
-    with open('txt/groupsLinksList.txt', "w") as groupsLinksFilterList:
-        groupsLinksFilterList.close()
-    
     KPOPlist = idolsList + groupsList
     KPOPLinksList = idolsLinksList + groupsLinksList
     
@@ -295,14 +254,6 @@ async def kpop_remove_idol(ctx, idolToRemove):
         idolsList.remove(idol)
         KPOPlist.remove(idol)
         
-        # Update the data/text in the idols txt documents
-        with open('txt/idolsList.txt', "w") as idolsFilterList:
-            for x in idolsList:
-                idolsFilterList.writelines(f"{x}\n")     
-        with open('txt/idolsLinksList.txt', "w") as idolsLinksFilterList:
-            for x in idolsLinksList:
-                idolsLinksFilterList.writelines(f"{x}\n")
-           
         # Print what happened
         await ctx.send(f'Removing {idol} from Tracking List')
         
@@ -327,14 +278,6 @@ async def kpop_remove_group(ctx, groupToRemove):
         groupsList.remove(group)
         KPOPlist.remove(group)
         
-        # Update the data/text in the groups txt documents
-        with open('txt/groupsList.txt', "w") as groupsFilterList:
-            for x in groupsList:
-                groupsFilterList.writelines(f"{x}\n")
-        with open('txt/groupsLinksList.txt', "w") as groupsLinksFilterList:
-            for x in groupsLinksList:
-                groupsLinksFilterList.writelines(f"{x}\n")
-
         # Print what happened
         await ctx.send(f'Removing {group} from Tracking List')
 

@@ -24,8 +24,6 @@ def f_RestoreLastKPOPImagesList():
 def f_FillLastKPOPImagesList(KPOPLinksList):
     if len(lastKPOPImagesList) < len(KPOPLinksList): # If lastKPOPImagesList is smaller than KPoPLinksList
         lastKPOPImagesList.append(None) # The lastKPOPImagesList will receive new Index and the Value will be None
-        with open('txt/lastFilterImages.txt', "w") as filterImage:
-            filterImage.write('\n'.join(str(i) for i in lastKPOPImagesList))
     
 
 def FindNewestImage(KPOPLink):
