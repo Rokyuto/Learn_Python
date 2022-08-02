@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
 import KPoPPost
+import csv
 
 # Initialize Variables
 baseURL = 'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-any/order' # Website Default URL
@@ -14,17 +15,18 @@ lastKPOPImagesList = [] # List with Last Image for each KPOP Link
 # Function to retrieve the last images from lastFilterImages.txt document and save them in lastKPOPImagesList
 def f_RestoreLastKPOPImagesList():
     global lastKPOPImagesList
-    file_lastFilterImages = open('txt/lastFilterImages.txt') # Open file
-    all_lines = file_lastFilterImages.readlines() # Read all lines
-    lastKPOPImagesList = [line[:-1] for line in all_lines] # Write each line in the List as new element (line[:-1] -> remove \n from each line because they are on new lines)
+    file_lastFilterImages = open("csv/filter.csv", "r") # Open filter.csv in read mode
+    csvReader = csv.reader(file_lastFilterImages) # CSV reader
+    for line in csvReader: # For each Line
+        lastKPOPImagesList.append(line[3]) # Append to lastKPOPImagesList each row Image (Last Column Value)
     return lastKPOPImagesList # Save and Return lastKPOPImagesList
 
 
 # Function to change lastKPOPImagesList size when the user add new KPOP for tracking
 def f_FillLastKPOPImagesList(KPOPLinksList):
     if len(lastKPOPImagesList) < len(KPOPLinksList): # If lastKPOPImagesList is smaller than KPoPLinksList
-        lastKPOPImagesList.append(None) # The lastKPOPImagesList will receive new Index and the Value will be None
-    
+        lastKPOPImagesList.append(None) # The lastKPOPImagesList will receive new Index and the Value will be None    
+        
 
 def FindNewestImage(KPOPLink):
     global newestElementHREF
@@ -54,13 +56,19 @@ async def CheckImage(bot,KPOPLinksList):
             if newestImage != lastKPOPImagesList[currentLinkIndex]:
                 lastKPOPImagesList[currentLinkIndex] = newestImage # Update the last Image for current KPoP
                 
-                #print(lastKPOPImagesList)
-                
-                # Rewrite the lastFilterImages.txt document with lastKPOPImagesList elements
-                with open('txt/lastFilterImages.txt', "w") as lastFilterImages:
-                    for currentElement in lastKPOPImagesList:
-                        lastFilterImages.writelines(f"{currentElement}\n")
-                
+                tempList = [] # Temp List fot Filling with the edited rows
+                filter=open("csv/filter.csv","r") # Open filter.csv in read mode
+                csvReader=csv.reader(filter) # Create csv reader object by the help of csv library for filter.csv
+                i=0
+                for row in csvReader:
+                    row[3] = lastKPOPImagesList[i] # Update Row Last Image (last Column)
+                    tempList.append(row) # Append the row for the tempList
+                    i+=1 
+                filter=open("csv/filter.csv","w",newline='') # Open filter.csv in write mode
+                csvWriter=csv.writer(filter) # Create csv writer object by the help of csv library for filter.csv
+                csvWriter.writerows(tempList) # Rewrite the filter.csv rows with the tempList
+                filter.close() # Close the file
+
                 await KPoPPost.ImagePost(bot, newestImage) # Call KPoPPost.ImagePost() Function
                 
     else:

@@ -10,9 +10,11 @@ import subprocess
 import KPoPTracker
 import os
 import requests 
+import re
+import csv
 
 # Bot Token
-token = 'myToken'
+token = 'token'
 
 # Bot Command Prefix
 bot = commands.Bot(command_prefix='!')
@@ -44,32 +46,33 @@ async def on_ready():
     #print("Connected...")
     channel = bot.get_channel(971514773634162769)
     await channel.send("I'm online :)")
-    #f_restoreLists() # Restore Bot Searching Filters
+    f_restoreLists() # Restore Bot Searching Filters
     await f_delayed_call() # Call the function when the bot is Started
 
 def f_restoreLists():
     global groupsList, idolsList, groupsLinksList, idolsLinksList
-    # If any of the filters txt documents is not empty then fill Filters Lists
-    if(os.path.getsize('txt/groupsList.txt') != 0 or os.path.getsize('txt/idolsList.txt') != 0 or os.path.getsize('txt/groupsLinksList.txt') != 0 or os.path.getsize('txt/idolsLinksList.txt') != 0):  
-        with open('txt/groupsList.txt', "r") as groupsFilterList:
-            allLines_groupsFilterList = groupsFilterList.readlines()
-            groupsList = [line_allLines_groupsFilterList[:-1] for line_allLines_groupsFilterList in allLines_groupsFilterList]
-        with open('txt/idolsList.txt', "r") as idolsFilterList:
-            allLines_idolsFilterList = idolsFilterList.readlines()
-            idolsList = [line_allLines_idolsFilterList[:-1] for line_allLines_idolsFilterList in allLines_idolsFilterList]
-        with open('txt/groupsLinksList.txt', "r") as groupsLinksFilterList:
-            allLines_groupsLinksFilterList = groupsLinksFilterList.readlines()
-            groupsLinksList = [line_allLines_groupsLinksFilterList[:-1] for line_allLines_groupsLinksFilterList in allLines_groupsLinksFilterList]
-        with open('txt/idolsLinksList.txt', "r") as idolsLinksLinksFilterList:
-            allLines_idolsLinksLinksFilterList = idolsLinksLinksFilterList.readlines()
-            idolsLinksList = [line_allLines_idolsLinksLinksFilterList[:-1] for line_allLines_idolsLinksLinksFilterList in allLines_idolsLinksLinksFilterList]
-        
+    # If filter.csv document is not empty then fill Filters Lists
+    if(os.path.getsize('csv/filter.csv') != 0 ):
+        filterFile = open('csv/filter.csv', "r") # Open the csv document in read mode
+        csvReader=csv.reader(filterFile)
+        for line in csvReader: # Read Second Column (idol or group)
+            if(line[1] == 'idol'): # If it's found the word 'idol' on the line
+                idolsList.append(line[0]) # Append the name of the Idol (filter.csv first column) to idolsList
+                idolsLinksList.append(line[2]) # Append the Idol Link (filter.csv third column) to idolsLinksList
+            else:
+                groupsList.append(line[0]) # Append the name of the Group (filter.csv first column) to groupsList
+                groupsLinksList.append(line[2]) # Append the Group Link (filter.csv third column) to groupsLinksList
+                 
         KPOPlist.extend(groupsList)
         KPOPlist.extend(idolsList)
 
         KPOPLinksList.extend(groupsLinksList)
         KPOPLinksList.extend(idolsLinksList)
         
+        print(KPOPlist)
+        print(KPOPLinksList)
+        filterFile.close()
+    
         KPoPTracker.f_RestoreLastKPOPImagesList()
     
     return KPOPlist, KPOPLinksList, groupsList, idolsList, groupsLinksList, idolsLinksList # Return and Save Filters Lists
@@ -111,7 +114,6 @@ async def kpop_idols_list(ctx):
 async def kpop_groups_list(ctx):
     await ctx.send("View KPOP Groups for Tracking List")
     await ctx.send(groupsList)
-
 
 # Get the Default Website Page Container
 def f_BaseURL():
@@ -164,6 +166,11 @@ async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
             idolsList.append(idol)
             idolsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order')
             
+            with open('csv/filter.csv', 'a', newline='\n', encoding='utf-8') as filter: # Oppen Filter.csv file in append mode
+                writer = csv.writer(filter)
+                writer.writerow([idol,'idol',f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order', 'None']) # Append new Row to the Filter.csv
+            filter.close()   
+            
             KPOPlist.append(idol)
             KPOPLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-{idol}/group-any/order')
             
@@ -172,7 +179,6 @@ async def kpop_add_idol(ctx, idolToAdd):  # Example: !kpop_add_idol rose
 
         # Call Function to Update the Total List with all Groups and Idols for Tracking
         await d_KPOPsTracking(ctx)
-
 
 # Function to Add Entered after Bot Command Group for Tracking
 @bot.command(pass_context=True)
@@ -193,6 +199,11 @@ async def kpop_add_group(ctx, groupToAdd):
             groupsList.append(group)
             groupsLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order')
             
+            with open('csv/filter.csv', 'a', newline='\n', encoding='utf-8') as filter: # Oppen Filter.csv file in append mode
+                writer = csv.writer(filter)
+                writer.writerow([group,'group',f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order', 'None']) # Append new Row to the Filter.csv
+            filter.close()
+            
             KPOPlist.append(group)
             KPOPLinksList.append(f'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-{group}/order')
             
@@ -202,7 +213,6 @@ async def kpop_add_group(ctx, groupToAdd):
         # Call Function to Update the Total List with all Groups and Idols for Tracking
         await d_KPOPsTracking(ctx)
 
-
 # Clear the Idols Tracking List
 @bot.command(pass_context=True)
 async def kpop_clear_idols_list(ctx):
@@ -211,6 +221,7 @@ async def kpop_clear_idols_list(ctx):
     
     idolsList.clear()
     idolsLinksList.clear()
+    f_RewriteFilterFile(1,'idol') # Call Function to remove all filter idols from filter.csv
     
     KPOPlist = idolsList + groupsList
     KPOPLinksList = idolsLinksList + groupsLinksList
@@ -219,7 +230,6 @@ async def kpop_clear_idols_list(ctx):
     await ctx.send("Clearing List with Idol for Tracking")
     await ctx.send(KPOPlist)
     
-
 # Clear the Groups Tracking List
 @bot.command(pass_context=True)
 async def kpop_clear_groups_list(ctx):
@@ -228,6 +238,7 @@ async def kpop_clear_groups_list(ctx):
  
     groupsList.clear()
     groupsLinksList.clear()
+    f_RewriteFilterFile(1,'group') # Call Function to remove all filter groups from filter.csv
 
     KPOPlist = idolsList + groupsList
     KPOPLinksList = idolsLinksList + groupsLinksList
@@ -235,7 +246,6 @@ async def kpop_clear_groups_list(ctx):
     # Clear groups links list
     await ctx.send("Clearing Groups List for Tracking")
     await ctx.send(KPOPlist)
-
 
 # Function to Remove Entered after Bot Command Idol for Tracking
 @bot.command(pass_context=True)
@@ -248,18 +258,18 @@ async def kpop_remove_idol(ctx, idolToRemove):
         idolsLinksList.pop(idolLinkIndex) # Pop = remove
         linkIndex = KPOPlist.index(idol)
         KPOPLinksList.pop(linkIndex)
-        #print(idolsLinksList)
         
         # Remove the Entered Idol from the Idols Tracking List
         idolsList.remove(idol)
         KPOPlist.remove(idol)
+        
+        f_RewriteFilterFile(0,idol) # Call Functio to remove the entered idol form filter.csv
         
         # Print what happened
         await ctx.send(f'Removing {idol} from Tracking List')
         
     else:
         await ctx.send(f'The Entered Idol : {idol} do not exist in the Idols Tracking List')
-
 
 # Function to Remove Entered after Bot Command Group for Tracking
 @bot.command(pass_context=True)
@@ -278,18 +288,35 @@ async def kpop_remove_group(ctx, groupToRemove):
         groupsList.remove(group)
         KPOPlist.remove(group)
         
+        f_RewriteFilterFile(0,group) # Call Functio to remove the entered group form filter.csv
+        
         # Print what happened
         await ctx.send(f'Removing {group} from Tracking List')
 
     else:
         await ctx.send(f'The Entered Group : {group} do not exist in the Groups Tracking List')
 
+# Function to remove defined kpop category (idol/group) or defined kpop idol/group from filter.csv when the function is called
+def f_RewriteFilterFile(index,kpop):
+    filter=open("csv/filter.csv","r") # Open filter.csv in read mode
+    csvReader=csv.reader(filter) # Create csv reader object by the help of csv library for filter.csv
+    tempList = [] # Temp List,who will be filled with not defined kpop category (idol/group), when the function is called
+    for row in csvReader: # For each Row in the filter.csv
+        if (row[index]==kpop): # If column 2 (idol/group) of the row contains the defined kpop category (idol/group), then Skip (Continue)
+            continue
+        else:
+            tempList.append(row) # Append the row to the tempList
+            
+    filter=open("csv/filter.csv","w",newline='') # Open filter.csv in write mode
+    csvWriter=csv.writer(filter) # Create csv writer object by the help of csv library for filter.csv
+    csvWriter.writerows(tempList) # Rewrite the filter.csv rows with the tempList
+    filter.close() # Close the file
+    tempList.clear() # Clear the tempList
 
 # Function to Update KPOPs for Tracking
 async def d_KPOPsTracking(ctx):
     KPoPTracker.f_FillLastKPOPImagesList(KPOPLinksList) # Update the last KPOP Images List's size
     await ctx.send(f'KPOPs for Tracking: {KPOPlist}')  # Print the List
     
-
 # Bot Token (Initialize the Bot) and Run him
 bot.run(token)
