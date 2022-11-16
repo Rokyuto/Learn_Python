@@ -52,7 +52,7 @@ async def CheckImage(bot,KPOPLinksList):
         global lastKPOPImagesList   
         
         for link in KPOPLinksList:        
-            f_SearchMachine(bot,link) # Call Funtion to get the newest Image Photo from newest Element HREF
+            f_SearchMachine(link) # Call Funtion to get the newest Image Photo from newest Element HREF
             
             currentLinkIndex = KPOPLinksList.index(link) # Get the Index of the current Link
             
@@ -79,26 +79,29 @@ async def CheckImage(bot,KPOPLinksList):
         global lastImage # Initialize Last Image
         global lastImageThumb # Last Image Thumbnail of the newest cell in the website
         
-        f_SearchMachine(bot,baseURL)
+        f_SearchMachine(baseURL)
         
-        if lastImageThumb != lastImage:
-            with open('txt/lastLink.txt', "r") as lastLinkFile:
-                lastLink = lastLinkFile.read()
-                for currentImg in newestImagesList: # Get each Idol Image in the List  
-                    if currentImg != lastImage and currentImg != lastLink: # If the newest image is not the same as the last image and is different from the saved link in lastLink.txt 
+        with open('txt/lastLink.txt', "r") as lastLinkFile:
+            lastLink = lastLinkFile.read()
+            if lastImageThumb != lastLink:
+                for currentImg in newestImagesList: # Get each Idol Image in the List 
+                    # If the newest image is not the same as the last image and is different from the saved link in lastLink.txt  
+                    if currentImg != lastImage and currentImg != lastLink:
                         await KPoPPost.ImagePost(bot, currentImg) # Call KPoPPost.ImagePost() Function
                         
                 lastImage = lastImageThumb
                 with open('txt/lastLink.txt', "w") as lastLinkFile:
                     lastLink = lastLinkFile.write(lastImage)
                     print("Updated lastLink.txt with the newestImage")
-        else: # If the newest image is the same as the last link in lastLink.txt or the same as the lastImage
-            print("The newestImage is the Same as the last")
+                    print("Last Image: " + lastImage)
+                    print("Last Link: " + lastLink)
+            else: # If the newest image is the same as the last link in lastLink.txt or the same as the lastImage
+                print("The newestImage is the Same as the last")
         
 
 
 # Funtion to get the newest Image from newest Element HREF
-def f_SearchMachine(bot,link):
+def f_SearchMachine(link):
     FindNewestImagesHREF(link) # Call Finding Newest Image href function
     # Initialize Variables
     global newestImage
