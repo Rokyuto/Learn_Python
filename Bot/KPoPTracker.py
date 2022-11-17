@@ -1,4 +1,4 @@
-import os
+import time
 from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
@@ -114,15 +114,21 @@ def f_SearchMachine(link):
 
     # Update Last Image which is the first in the container of the newest posted , also it's thumbnail of the newest cell in the website
     lastImageThumb = findNewImage(newestImageDiv.find('img')['src'])
+    if newestImageDiv != None and lastImageThumb != None :
+
+        if lastImage != lastImageThumb:
+            # newestImageDiv.findAll('img') => Find All Images in the Div Contatiner
+            for image in newestImageDiv.findAll('img'): # Itterate through All Images in the Div Contatiner
+                
+                # Append Image to newest Images List
+                newestImagesList.append(findNewImage(image['src'])) # image['src'] => Get the Newest Element Link / Src
+            
+            return newestImagesList
+    else:
+        time.sleep(5)
+        f_SearchMachine(baseURL)
     
-    if lastImage != lastImageThumb:
-        # newestImageDiv.findAll('img') => Find All Images in the Div Contatiner
-        for image in newestImageDiv.findAll('img'): # Itterate through All Images in the Div Contatiner
-              
-            # Append Image to newest Images List
-            newestImagesList.append(findNewImage(image['src'])) # image['src'] => Get the Newest Element Link / Src
         
-        return newestImagesList
 
 
 def findNewImage(newImageLink):

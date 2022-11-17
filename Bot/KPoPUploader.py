@@ -80,7 +80,7 @@ async def f_delayed_call():
     while True:  # Infinity Loop
         # Calculate the delay
         now = datetime.datetime.now()
-        then = now+datetime.timedelta(seconds=2)
+        then = now+datetime.timedelta(seconds=60) # Delay 1 minute between each new Images Check in the Website
         wait_time = (then-now).total_seconds()
 
         await asyncio.sleep(wait_time)  # Wait the delay time
