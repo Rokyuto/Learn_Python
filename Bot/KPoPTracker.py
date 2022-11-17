@@ -93,8 +93,6 @@ async def CheckImage(bot,KPOPLinksList):
                 with open('txt/lastLink.txt', "w") as lastLinkFile:
                     lastLink = lastLinkFile.write(lastImage)
                     print("Updated lastLink.txt with the newestImage")
-                    print("Last Image: " + lastImage)
-                    print("Last Link: " + lastLink)
             else: # If the newest image is the same as the last link in lastLink.txt or the same as the lastImage
                 print("The newestImage is the Same as the last")
         
