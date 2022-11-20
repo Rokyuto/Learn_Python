@@ -33,9 +33,9 @@ def f_FillLastKPOPImagesList(KPOPLinksList):
 def FindNewestImagesHREF(KPOPLink):
     global newestElementHREF
     URL = KPOPLink
+    page = requests.get(URL) # Call the Website
+    soup = BeautifulSoup(page._content, 'html.parser') # Parse the Website to be able to get information || Get all information in the website 
     try:
-        page = requests.get(URL) # Call the Website
-        soup = BeautifulSoup(page._content, 'html.parser') # Parse the Website to be able to get information || Get all information in the website 
         images = soup.find(class_='box pics infinite') # Get Container with all Idols Images || 
         newestCategory = images.find(class_='matrix matrix-breezy mb-2') # Get the Newest Children Idols Images Container ||
         newestElement = newestCategory.find(class_='cell') # Get the Newest Element in the Category
@@ -117,14 +117,18 @@ def f_SearchMachine(link):
 
     # Update Last Image which is the first in the container of the newest posted , also it's thumbnail of the newest cell in the website
     lastImageThumb = findNewImage(newestImageDiv.find('img')['src'])
-    if lastImage != lastImageThumb:
-        # newestImageDiv.findAll('img') => Find All Images in the Div Contatiner
-        for image in newestImageDiv.findAll('img'): # Itterate through All Images in the Div Contatiner
+    if newestImageDiv != None and lastImageThumb != None :
+        if lastImage != lastImageThumb:
+            # newestImageDiv.findAll('img') => Find All Images in the Div Contatiner
+            for image in newestImageDiv.findAll('img'): # Itterate through All Images in the Div Contatiner
+                
+                # Append Image to newest Images List
+                newestImagesList.append(findNewImage(image['src'])) # image['src'] => Get the Newest Element Link / Src
             
-            # Append Image to newest Images List
-            newestImagesList.append(findNewImage(image['src'])) # image['src'] => Get the Newest Element Link / Src
-        
-        return newestImagesList 
+            return newestImagesList
+    else:
+        time.sleep(5)
+        f_SearchMachine(baseURL)
 
 
 def findNewImage(newImageLink):
