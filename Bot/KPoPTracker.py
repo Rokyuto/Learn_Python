@@ -56,22 +56,23 @@ async def CheckImage(bot,KPOPLinksList):
             
             for currentImg in newestImagesList: # Get each Idol Image in the List                
                 if currentImg != lastKPOPImagesList[currentLinkIndex]:
-                    lastKPOPImagesList[currentLinkIndex] = currentImg # Update the last Image for current KPoP
-                    
-                    tempList = [] # Temp List fot Filling with the edited rows
-                    filter=open("csv/filter.csv","r") # Open filter.csv in read mode
-                    csvReader=csv.reader(filter) # Create csv reader object by the help of csv library for filter.csv
-                    i=0
-                    for row in csvReader:
-                        row[3] = lastKPOPImagesList[i] # Update Row Last Image (last Column)
-                        tempList.append(row) # Append the row for the tempList
-                        i+=1 
-                    filter=open("csv/filter.csv","w",newline='') # Open filter.csv in write mode
-                    csvWriter=csv.writer(filter) # Create csv writer object by the help of csv library for filter.csv
-                    csvWriter.writerows(tempList) # Rewrite the filter.csv rows with the tempList
-                    filter.close() # Close the file
-
                     await KPoPPost.ImagePost(bot, currentImg) # Call KPoPPost.ImagePost() Function to Post each Idol Image in the List
+                    
+            lastKPOPImagesList[currentLinkIndex] = newestImagesList[0] # Update the last Image for current KPoP Idol with the first newest Idol's Image (Thumbanil)
+            
+            tempList = [] # Temp List fot Filling with the edited rows
+            filter=open("csv/filter.csv","r") # Open filter.csv in read mode
+            csvReader=csv.reader(filter) # Create csv reader object by the help of csv library for filter.csv
+            i=0
+            for row in csvReader:
+                row[3] = lastKPOPImagesList[i] # Update Row Last Image (last Column)
+                tempList.append(row) # Append the row for the tempList
+                i+=1 
+            filter=open("csv/filter.csv","w",newline='') # Open filter.csv in write mode
+            csvWriter=csv.writer(filter) # Create csv writer object by the help of csv library for filter.csv
+            csvWriter.writerows(tempList) # Rewrite the filter.csv rows with the tempList
+            filter.close() # Close the file
+
             newestImagesList.clear()
                 
     else:
@@ -93,9 +94,10 @@ async def CheckImage(bot,KPOPLinksList):
                 with open('txt/lastLink.txt', "w") as lastLinkFile:
                     lastLink = lastLinkFile.write(lastImage)
                     print("Updated lastLink.txt with the newestImage")
+                    print("Newest Images List after the update: ",newestImagesList)
             else: # If the newest image is the same as the last link in lastLink.txt or the same as the lastImage
                 print("The newestImage is the Same as the last")
-                print("Newest Images List: ",newestImagesList)
+                print("Newest Images List is empty: ",newestImagesList)
         
 
 
@@ -123,7 +125,7 @@ def f_SearchMachine(link):
                 # Append Image to newest Images List
                 newestImagesList.append(findNewImage(image['src'])) # image['src'] => Get the Newest Element Link / Src
             
-            print("Newest Images List: ",newestImagesList)
+            print("Newest Images List is filled: ",newestImagesList)
             return newestImagesList
     else:
         time.sleep(5)
