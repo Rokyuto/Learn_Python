@@ -7,7 +7,7 @@ import csv
 
 # Initialize Variables
 baseURL = 'https://kpopping.com/kpics/gender-female/category-all/idol-any/group-any/order' # Website Default URL
-lastImage = None
+lastImage = open('txt/lastLink.txt', "r").read()
 newestImage = None
 newestElementHREF = None # Last Image Initial Value
 lastKPOPImagesList = [] # List with Last Image for each KPOP Link
@@ -35,15 +35,10 @@ def FindNewestImagesHREF(KPOPLink):
     URL = KPOPLink
     page = requests.get(URL) # Call the Website
     soup = BeautifulSoup(page._content, 'html.parser') # Parse the Website to be able to get information || Get all information in the website 
-    try:
-        images = soup.find(class_='box pics infinite') # Get Container with all Idols Images || 
-        newestCategory = images.find(class_='matrix matrix-breezy mb-2') # Get the Newest Children Idols Images Container ||
-        newestElement = newestCategory.find(class_='cell') # Get the Newest Element in the Category
-        newestElementHREF = newestElement.find('a')['href'] # Get the Newest Element' Image
-    except Exception as exception:
-        print(exception)
-        time.sleep(60)
-        FindNewestImagesHREF(baseURL)
+    images = soup.find(class_='box pics infinite') # Get Container with all Idols Images || 
+    newestCategory = images.find(class_='matrix matrix-breezy mb-2') # Get the Newest Children Idols Images Container ||
+    newestElement = newestCategory.find(class_='cell') # Get the Newest Element in the Category
+    newestElementHREF = newestElement.find('a')['href'] # Get the Newest Element' Image
     
     return newestElementHREF # Return and Update the newest Element href ( Open the newest Cell (newest postet idol pictures) )
 
@@ -77,6 +72,7 @@ async def CheckImage(bot,KPOPLinksList):
                     filter.close() # Close the file
 
                     await KPoPPost.ImagePost(bot, currentImg) # Call KPoPPost.ImagePost() Function to Post each Idol Image in the List
+            newestImagesList.clear()
                 
     else:
         global lastImage # Initialize Last Image
@@ -93,11 +89,13 @@ async def CheckImage(bot,KPOPLinksList):
                         await KPoPPost.ImagePost(bot, currentImg) # Call KPoPPost.ImagePost() Function
                         
                 lastImage = lastImageThumb
+                newestImagesList.clear()
                 with open('txt/lastLink.txt', "w") as lastLinkFile:
                     lastLink = lastLinkFile.write(lastImage)
                     print("Updated lastLink.txt with the newestImage")
             else: # If the newest image is the same as the last link in lastLink.txt or the same as the lastImage
                 print("The newestImage is the Same as the last")
+                print("Newest Images List: ",newestImagesList)
         
 
 
@@ -106,7 +104,7 @@ def f_SearchMachine(link):
     FindNewestImagesHREF(link) # Call Finding Newest Image href function
     # Initialize Variables
     global newestImage
-    global lastImage
+    #global lastImage
     global lastImageThumb # Last Image Thumbnail of the newest cell in the website
     global newestImagesList
     
@@ -125,6 +123,7 @@ def f_SearchMachine(link):
                 # Append Image to newest Images List
                 newestImagesList.append(findNewImage(image['src'])) # image['src'] => Get the Newest Element Link / Src
             
+            print("Newest Images List: ",newestImagesList)
             return newestImagesList
     else:
         time.sleep(5)
