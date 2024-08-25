@@ -1,6 +1,7 @@
 import time
 from urllib.request import Request
 from bs4 import BeautifulSoup
+import discord
 from discord.ext import commands
 from discord.ext.commands import bot
 import asyncio
@@ -14,7 +15,9 @@ import csv
 token = 'token'
 
 # Bot Command Prefix
-bot = commands.Bot(command_prefix='!')
+intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 bot_commandsDict = {
     "!kpop_bot_commands": "View Bot Commands",

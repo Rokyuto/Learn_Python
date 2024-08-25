@@ -1,4 +1,4 @@
 @echo
-cd E:\Work\#Code Projects\Python\Bot
+cd E:\Projects\#Code Projects\Python\Bot
 python KPoPUploader.py
 pause
